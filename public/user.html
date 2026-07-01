@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AK NUMBER PANEL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .usr-layout { display: flex; height: 100vh; width: 100vw; }
+        .usr-sidebar { width: 250px; border-right: 1px solid var(--border-color); background: rgba(10,11,18,0.95); display: flex; flex-direction: column; height: 100%; z-index: 10; }
+        .usr-side-hd { padding: 20px; display: flex; align-items: center; gap: 10px; }
+        .usr-side-hd h3 { font-weight: 800; letter-spacing: 0.5px; font-size: 15px; }
+        .usr-side-nav { padding: 10px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+        .usr-nav-item { background: transparent; border: none; color: var(--text-muted); font-size: 14px; font-weight: 500; padding: 10px 14px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: var(--transition-smooth); text-align: left; width: 100%; }
+        .usr-nav-item:hover { color: var(--text-main); background: rgba(255,255,255,0.05); }
+        .usr-nav-item.active { background: var(--primary); color: #fff; box-shadow: 0 4px 15px rgba(99,102,241,0.3); }
+        .usr-side-ft { padding: 14px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 6px; }
+        .usr-main { flex: 1; display: flex; flex-direction: column; height: 100%; overflow-y: auto; background: radial-gradient(circle at 90% 10%, #0d0f1b 0%, #090a0f 60%); }
+        .usr-main-hd { padding: 16px 28px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: rgba(10,11,18,0.9); backdrop-filter: blur(10px); z-index: 5; }
+        .usr-main-hd h1 { font-size: 20px; font-weight: 700; }
+        .usr-main-body { padding: 20px 28px; flex: 1; }
+        .usr-tab { display: none; }
+        .usr-tab.active { display: block; }
+        .met-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px; }
+        .met-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 18px; display: flex; align-items: center; gap: 14px; transition: var(--transition-smooth); }
+        .met-card:hover { border-color: var(--border-active); }
+        .met-ic { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .met-ic.c1 { background: rgba(16,185,129,0.15); color: #10b981; }
+        .met-ic.c2 { background: rgba(59,130,246,0.15); color: #3b82f6; }
+        .met-ic.c3 { background: rgba(139,92,246,0.15); color: #8b5cf6; }
+        .met-ic.c4 { background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .met-dt h3 { font-size: 22px; font-weight: 700; }
+        .met-dt span { font-size: 12px; color: var(--text-muted); }
+        .svc-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 16px 20px; cursor: pointer; transition: var(--transition-smooth); display: flex; align-items: center; gap: 14px; }
+        .svc-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(99,102,241,0.15); }
+        .svc-card ion-icon { font-size: 26px; color: var(--primary); }
+        .svc-card h3 { font-size: 15px; font-weight: 600; }
+        .svc-card p { font-size: 12px; color: var(--text-muted); }
+        .row-item { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; cursor: pointer; transition: var(--transition-smooth); }
+        .row-item:hover { border-color: var(--border-active); background: var(--bg-card-hover); }
+        .row-item .rw-left { display: flex; align-items: center; gap: 8px; }
+        .otp-row { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .otp-badge { font-family: monospace; font-size: 17px; font-weight: 700; color: var(--primary); background: rgba(99,102,241,0.1); padding: 4px 10px; border-radius: 6px; }
+        .num-box { display: inline-block; font-family: monospace; font-size: 22px; font-weight: 700; background: rgba(16,185,129,0.1); color: var(--text-success); padding: 10px 20px; border-radius: 10px; margin: 10px 0; cursor: pointer; user-select: all; }
+        .num-box:hover { background: rgba(16,185,129,0.2); }
+        .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); cursor: pointer; font-size: 13px; margin-bottom: 14px; border: none; background: none; }
+        .back-link:hover { color: var(--text-main); }
+        .crumb { display: flex; align-items: center; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; font-size: 13px; }
+        .crumb span { color: var(--text-muted); }
+        .crumb span.last { color: var(--text-main); font-weight: 600; }
+        .result-card { background: var(--bg-card); border: 1px solid var(--border-active); border-radius: 12px; padding: 20px; margin-bottom: 16px; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .pl-2 { padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+        .pl-2.ok { background: rgba(16,185,129,0.15); color: #10b981; }
+        .pl-2.err { background: rgba(239,68,68,0.15); color: #ef4444; }
+        .pl-2.inf { background: rgba(59,130,246,0.15); color: #3b82f6; }
+        .search-box { display: flex; gap: 10px; margin-bottom: 16px; }
+        .search-box input { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px; color: var(--text-main); font-size: 15px; }
+        .search-box input:focus { border-color: var(--primary); outline: none; }
+        .divider { border: none; border-top: 1px solid var(--border-color); margin: 20px 0; }
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+        .empty-state ion-icon { font-size: 40px; margin-bottom: 10px; opacity: 0.4; }
+    </style>
+</head>
+<body class="dark-mode">
+<div class="usr-layout">
+    <!-- SIDEBAR -->
+    <aside class="usr-sidebar">
+        <div class="usr-side-hd">
+            <div class="logo-icon"><ion-icon name="keypad-outline"></ion-icon></div>
+            <h3>AK NUMBER</h3>
+        </div>
+        <nav class="usr-side-nav">
+            <button class="usr-nav-item active" data-tab="services"><ion-icon name="construct-outline"></ion-icon> Services</button>
+            <button class="usr-nav-item" data-tab="get-number"><ion-icon name="refresh-outline"></ion-icon> Get New Number</button>
+            <button class="usr-nav-item" data-tab="live-traffic"><ion-icon name="pulse-outline"></ion-icon> Live Traffic</button>
+            <button class="usr-nav-item" data-tab="otp-traffic"><ion-icon name="bar-chart-outline"></ion-icon> OTP Traffic</button>
+            <button class="usr-nav-item" data-tab="range-search"><ion-icon name="search-outline"></ion-icon> Range Search</button>
+            <button class="usr-nav-item" data-tab="support"><ion-icon name="help-circle-outline"></ion-icon> Support</button>
+        </nav>
+        <div class="usr-side-ft">
+            <button class="btn btn-secondary btn-block" id="btn-logout">Sign Out</button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="usr-main">
+        <header class="usr-main-hd">
+            <h1 id="page-title">Services</h1>
+            <div class="status-indicator"><span class="pulse-dot green"></span> Online</div>
+        </header>
+        <div class="usr-main-body">
+
+            <!-- TAB: SERVICES -->
+            <div id="tab-services" class="usr-tab active">
+                <p id="svc-loading" class="section-desc" style="margin-bottom:14px;">⏳ Loading available services...</p>
+                <div id="svc-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px;"></div>
+                <div id="svc-detail" style="display:none;">
+                    <button class="back-link" id="btn-back-svc"><ion-icon name="arrow-back-outline"></ion-icon> Back</button>
+                    <div class="crumb" id="svc-crumb"></div>
+                    <div id="svc-countries"></div>
+                    <div id="svc-ranges" style="display:none;"></div>
+                    <div id="svc-result" style="display:none;"></div>
+                </div>
+            </div>
+
+            <!-- TAB: GET NEW NUMBER -->
+            <div id="tab-get-number" class="usr-tab">
+                <div class="glass-card" style="max-width:500px;">
+                    <h3>🔄 Get a New Number</h3>
+                    <p class="section-desc">Quickly re-allocate a number from your last used service/range.</p>
+                    <div id="gn-status" style="margin:14px 0;"></div>
+                    <button class="btn btn-primary btn-block" id="btn-get-number" onclick="doGetNewNumber()">Request New Number</button>
+                    <div id="gn-result" style="margin-top:14px;"></div>
+                </div>
+            </div>
+
+            <!-- TAB: LIVE TRAFFIC -->
+            <div id="tab-live-traffic" class="usr-tab">
+                <p id="lt-loading" class="section-desc">⏳ Loading live traffic from providers...</p>
+                <div id="lt-display"></div>
+            </div>
+
+            <!-- TAB: OTP TRAFFIC -->
+            <div id="tab-otp-traffic" class="usr-tab">
+                <p id="ot-loading" class="section-desc">⏳ Loading OTP traffic stats...</p>
+                <div id="ot-display"></div>
+            </div>
+
+            <!-- TAB: RANGE SEARCH -->
+            <div id="tab-range-search" class="usr-tab">
+                <div class="glass-card" style="max-width:500px; margin-bottom:20px;">
+                    <h3>🔢 Direct Range Search</h3>
+                    <p class="section-desc">Enter a phone prefix to find matching ranges.</p>
+                    <div class="search-box" style="margin-top:12px;">
+                        <input type="text" id="search-prefix" placeholder="e.g. 88017 or 44740" onkeydown="if(event.key==='Enter')doRangeSearch()">
+                        <button class="btn btn-primary" onclick="doRangeSearch()">Search</button>
+                    </div>
+                    <div id="rs-loading" style="display:none; margin-top:8px;" class="section-desc">⏳ Searching ranges...</div>
+                </div>
+                <div id="rs-results"></div>
+            </div>
+
+            <!-- TAB: SUPPORT -->
+            <div id="tab-support" class="usr-tab">
+                <div style="display:flex; gap:20px; flex-wrap:wrap;">
+                    <div class="glass-card" style="max-width:420px; flex:1;">
+                        <h3>📞 Contact Admin</h3>
+                        <p class="section-desc">Need help? Contact the administrator.</p>
+                        <div id="support-contact" style="margin-top:14px;"></div>
+                    </div>
+                    <div class="glass-card" style="max-width:420px; flex:1; display:none;" id="change-password-card">
+                        <h3>🔒 Change Password</h3>
+                        <form id="change-password-form" style="margin-top:12px;">
+                            <div class="input-group"><label for="old-pw">Current Password</label><input type="password" id="old-pw" required placeholder="••••••••"></div>
+                            <div class="input-group"><label for="new-pw">New Password (min 6 chars)</label><input type="password" id="new-pw" required placeholder="••••••••" minlength="6"></div>
+                            <button type="submit" class="btn btn-primary btn-block">Update Password</button>
+                            <p id="pw-change-status" style="text-align:center; margin-top:8px; font-size:13px;"></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<div id="toast" class="toast">Successfully Saved!</div>
+<script src="user.js"></script>
+</body>
+</html>

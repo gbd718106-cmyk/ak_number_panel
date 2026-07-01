@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AK NUMBER PANEL - Admin Dashboard</title>
+    <!-- Modern Premium Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Ionicons for Premium Icons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-mode">
+    
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="screen active">
+        <div class="glass-card login-card animate-fade-in">
+            <div class="logo-area">
+                <div class="logo-icon"><ion-icon name="keypad-outline"></ion-icon></div>
+                <h2>AK NUMBER PANEL</h2>
+                <p>Enter your admin credentials to proceed</p>
+            </div>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" required placeholder="admin@aknumber.com">
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            </form>
+            <div class="login-footer">
+                <p>Not an Admin? <a href="#" id="admin-contact-btn">Contact System Administrator</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP SCREEN -->
+    <div id="app-screen" class="screen">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon"><ion-icon name="keypad-outline"></ion-icon></div>
+                <h3>AK PANEL</h3>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-tab="dashboard">
+                    <ion-icon name="grid-outline"></ion-icon> Dashboard
+                </button>
+                <button class="nav-item" data-tab="bots">
+                    <ion-icon name="logo-android"></ion-icon> Telegram Bots
+                </button>
+                <button class="nav-item" data-tab="users">
+                    <ion-icon name="people-outline"></ion-icon> Users Manager
+                </button>
+                <button class="nav-item" data-tab="providers">
+                    <ion-icon name="layers-outline"></ion-icon> Providers & Keys
+                </button>
+                <button class="nav-item" data-tab="services">
+                    <ion-icon name="construct-outline"></ion-icon> Service Controls
+                </button>
+                <button class="nav-item" data-tab="broadcast">
+                    <ion-icon name="megaphone-outline"></ion-icon> Broadcast
+                </button>
+                <button class="nav-item" data-tab="settings">
+                    <ion-icon name="settings-outline"></ion-icon> Settings
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span id="user-display-email">admin@aknumber.com</span>
+                    <small>System Admin</small>
+                </div>
+                <button id="logout-btn" class="logout-icon-btn" title="Sign Out">
+                    <ion-icon name="log-out-outline"></ion-icon>
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1 id="page-title">Dashboard Overview</h1>
+                <div class="header-actions">
+                    <div class="status-indicator">
+                        <span class="pulse-dot green"></span> Running Healthy
+                    </div>
+                </div>
+            </header>
+
+            <div class="scroll-area">
+                
+                <!-- TAB: DASHBOARD -->
+                <section id="tab-dashboard" class="tab-pane active">
+                    <!-- Metrics grid -->
+                    <div class="metrics-grid">
+                        <div class="glass-card metric-card">
+                            <div class="metric-icon blue"><ion-icon name="people"></ion-icon></div>
+                            <div class="metric-details">
+                                <span class="metric-label">Bot Users</span>
+                                <h3 id="stat-users">0</h3>
+                            </div>
+                        </div>
+                        <div class="glass-card metric-card">
+                            <div class="metric-icon purple"><ion-icon name="logo-android"></ion-icon></div>
+                            <div class="metric-details">
+                                <span class="metric-label">Active Bots</span>
+                                <h3 id="stat-bots">0</h3>
+                            </div>
+                        </div>
+                        <div class="glass-card metric-card">
+                            <div class="metric-icon green"><ion-icon name="checkmark-circle"></ion-icon></div>
+                            <div class="metric-details">
+                                <span class="metric-label">Successful OTPs (24h)</span>
+                                <h3 id="stat-otps-24h">0</h3>
+                            </div>
+                        </div>
+                        <div class="glass-card metric-card">
+                            <div class="metric-icon gold"><ion-icon name="calendar"></ion-icon></div>
+                            <div class="metric-details">
+                                <span class="metric-label">OTPs Completed (30d)</span>
+                                <h3 id="stat-otps-30d">0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Provider Stats Row -->
+                    <div class="glass-card flex-col" style="margin-top: 20px;">
+                        <div class="card-header">
+                            <h3>📋 Provider Performance</h3>
+                            <small>Daily / Weekly / Monthly OTP statistics by provider</small>
+                        </div>
+                        <div class="table-container">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>Provider</th>
+                                        <th>Active Keys</th>
+                                        <th>24h OTPs</th>
+                                        <th>7d OTPs</th>
+                                        <th>30d OTPs</th>
+                                        <th>Top Service</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="provider-stats-body">
+                                    <tr><td colspan="6" class="text-center">No providers configured yet.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="dashboard-columns">
+                        <div class="glass-card flex-col">
+                            <div class="card-header">
+                                <h3>🔥 Most Active Services</h3>
+                                <small>Leaderboard based on volume</small>
+                            </div>
+                            <div class="table-container">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Rank</th>
+                                            <th>Service Platform</th>
+                                            <th>Total OTPs</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="leaderboard-services">
+                                        <tr><td colspan="3" class="text-center">Loading leaderboard data...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="glass-card flex-col">
+                            <div class="card-header">
+                                <h3>🔢 Highest Traffic Ranges</h3>
+                                <small>Top performing number ranges</small>
+                            </div>
+                            <div class="table-container">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Rank</th>
+                                            <th>Country Range</th>
+                                            <th>Total OTPs</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="leaderboard-ranges">
+                                        <tr><td colspan="3" class="text-center">Loading range data...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB: BOTS -->
+                <section id="tab-bots" class="tab-pane">
+                    <div class="section-layout">
+                        <!-- Add Bot Card -->
+                        <div class="glass-card form-column">
+                            <h3>Connect New Telegram Bot</h3>
+                            <p class="section-desc">Add a bot to the panel. Ensure webhook config is automatically mapped.</p>
+                            <form id="add-bot-form" class="spacing-form">
+                                <div class="input-group">
+                                    <label for="bot-name">Brand/Platform Name</label>
+                                    <input type="text" id="bot-name" required placeholder="e.g. AK NUMBER PANEL">
+                                </div>
+                                <div class="input-group">
+                                    <label for="bot-token">Telegram Bot API Token</label>
+                                    <input type="text" id="bot-token" required placeholder="123456789:ABCdefGhIJKlmNoPQRsT...">
+                                </div>
+                                <div class="input-group">
+                                    <label for="bot-support">Support Username/Link</label>
+                                    <input type="text" id="bot-support" required placeholder="e.g. @ak_admin">
+                                </div>
+                                <div class="form-actions-row">
+                                    <button type="button" id="btn-test-bot" class="btn btn-secondary">Test Connection</button>
+                                    <button type="submit" class="btn btn-primary">Save & Launch</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Active Bots list -->
+                        <div class="glass-card list-column flex-col">
+                            <h3>Active Bots</h3>
+                            <div class="cards-grid" id="bots-list">
+                                <!-- Bot Cards go here -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB: USERS -->
+                <section id="tab-users" class="tab-pane">
+                    <div class="tabs-sub-header">
+                        <button class="tab-sub-btn active" data-sub-tab="bot-users">Telegram Bot Users</button>
+                        <button class="tab-sub-btn" data-sub-tab="admin-users">Web Accounts</button>
+                    </div>
+
+                    <!-- Bot Users Section -->
+                    <div id="sub-tab-bot-users" class="sub-tab-pane active">
+                        <div class="glass-card flex-col">
+                            <div class="table-actions">
+                                <h3>Telegram Customers Directory</h3>
+                                <select id="bot-user-filter" class="filter-select" onchange="filterBotUsers()">
+                                    <option value="all">All Bots</option>
+                                </select>
+                            </div>
+                            <div class="table-container">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Telegram Info</th>
+                                            <th>Connected Bot</th>
+                                            <th>Total OTPs</th>
+                                            <th>Registered</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="bot-users-table-body">
+                                        <!-- Dynamic content -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Web Accounts Section -->
+                    <div id="sub-tab-admin-users" class="sub-tab-pane">
+                        <div class="section-layout">
+                            <div class="glass-card form-column">
+                                <h3>Create Web Account</h3>
+                                <p class="section-desc">Create login credentials for admin and regular web users.</p>
+                                <form id="add-admin-form" class="spacing-form">
+                                    <div class="input-group">
+                                        <label for="admin-email">Email Address</label>
+                                        <input type="email" id="admin-email" required placeholder="user@aknumber.com">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="admin-password">Temporary Password</label>
+                                        <input type="password" id="admin-password" required placeholder="••••••••">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="admin-role">Account Role</label>
+                                        <select id="admin-role">
+                                            <option value="user">Web User</option>
+                                            <option value="superadmin">Super Admin</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                                </form>
+                            </div>
+
+                            <div class="glass-card list-column flex-col">
+                                <h3>Web Accounts Directory</h3>
+                                <div class="table-container">
+                                    <table class="custom-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Email</th>
+                                                <th>Role</th>
+                                                <th>Status</th>
+                                                <th>Created</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="admin-users-table-body">
+                                            <!-- Dynamic content -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB: PROVIDERS -->
+                <section id="tab-providers" class="tab-pane">
+                    <div class="section-layout">
+                        <!-- Add Provider & Accounts Cards -->
+                        <div class="glass-card form-column flex-col">
+                            <div class="form-section">
+                                <h3>Register API Provider</h3>
+                                <p class="section-desc">Define a new upstream API provider platform.</p>
+                                <form id="add-provider-form" class="spacing-form">
+                                    <div class="input-group">
+                                        <label for="provider-name">Provider Name</label>
+                                        <input type="text" id="provider-name" required placeholder="e.g. FastOTP SMS">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="provider-code">Unique Code (2-4 letters)</label>
+                                        <input type="text" id="provider-code" required maxlength="4" placeholder="e.g. MK">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="provider-url">API Base URL</label>
+                                        <input type="url" id="provider-url" required placeholder="https://mkonlinesms.com/@Telegram/...">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block">Register Provider</button>
+                                </form>
+                            </div>
+
+                            <div class="form-section divider-top" id="add-account-section" style="display:none;">
+                                <h3>Add Account to <span id="current-provider-name">Provider</span></h3>
+                                <p class="section-desc">Connect accounts/API keys to use in Rotation & Failover.</p>
+                                <form id="add-account-form" class="spacing-form">
+                                    <input type="hidden" id="account-provider-id">
+                                    <div class="input-group">
+                                        <label for="account-name">Account Label Name</label>
+                                        <input type="text" id="account-name" required placeholder="e.g. First Account, Reserve Key">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="account-key">X-API-Key</label>
+                                        <input type="password" id="account-key" required placeholder="Paste secret API key">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="account-priority">Rotation Priority Rank (1 = First Priority)</label>
+                                        <input type="number" id="account-priority" required min="1" value="1">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block">Add API Key Account</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Providers list details -->
+                        <div class="glass-card list-column flex-col">
+                            <h3>Providers Directory</h3>
+                            <div class="providers-accordion" id="providers-list">
+                                <!-- Accordion lists of active providers -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB: SERVICES -->
+                <section id="tab-services" class="tab-pane">
+                    <div class="section-layout">
+                        <!-- Load Services Panel -->
+                        <div class="glass-card form-column">
+                            <h3>Service Manager</h3>
+                            <p class="section-desc">Select a provider and load live services from API.</p>
+                            <div class="input-group">
+                                <label for="svc-provider-select">Select Provider</label>
+                                <select id="svc-provider-select" class="filter-select" style="width:100%;">
+                                    <option value="">-- Select a provider --</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary btn-block" onclick="loadProviderServices()" style="margin-top:8px;">
+                                <ion-icon name="cloud-download-outline"></ion-icon> Load Services
+                            </button>
+                            <button class="btn btn-secondary btn-block" onclick="saveServiceSelection()" style="margin-top:4px;">
+                                <ion-icon name="save-outline"></ion-icon> Save Selection
+                            </button>
+                            <div id="svc-load-status" class="section-desc" style="margin-top:8px;"></div>
+
+                            <div id="svc-toggle-list" style="margin-top:12px; max-height:300px; overflow-y:auto;"></div>
+                        </div>
+
+                        <!-- Range Details Panel -->
+                        <div class="glass-card list-column flex-col">
+                            <div class="card-header">
+                                <h3 id="svc-range-title">Number Ranges</h3>
+                                <small id="svc-range-subtitle">Select a service to view ranges</small>
+                            </div>
+                            <div id="svc-range-list" class="table-container" style="max-height:500px; overflow-y:auto;">
+                                <p class="section-desc text-center">No ranges to display. Load services first.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB: BROADCAST -->
+                <section id="tab-broadcast" class="tab-pane">
+                    <div class="section-layout">
+                        <div class="glass-card form-column">
+                            <h3>Send Announcement</h3>
+                            <p class="section-desc">Broadcast message to users of a selected bot.</p>
+                            <div class="input-group">
+                                <label for="broadcast-bot-select">Select Bot</label>
+                                <select id="broadcast-bot-select" class="filter-select" style="width:100%;" onchange="loadBroadcastUsers()">
+                                    <option value="">-- Select bot --</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="broadcast-user-select">Specific User (optional)</label>
+                                <select id="broadcast-user-select" class="filter-select" style="width:100%;">
+                                    <option value="all">All Users</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="broadcast-message">Message</label>
+                                <textarea id="broadcast-message" rows="4" placeholder="Type your announcement..." style="width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--border-color); color:var(--text-main); border-radius:8px; padding:10px; font-family:'Outfit',sans-serif; resize:vertical;"></textarea>
+                            </div>
+                            <button class="btn btn-primary btn-block" onclick="sendBroadcast()">
+                                <ion-icon name="send-outline"></ion-icon> Send Broadcast
+                            </button>
+                            <div id="broadcast-status" class="section-desc" style="margin-top:8px;"></div>
+                        </div>
+
+                        <div class="glass-card list-column flex-col">
+                            <h3>Broadcast History</h3>
+                            <div class="table-container" id="broadcast-history">
+                                <p class="section-desc text-center">No broadcasts sent yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB: SETTINGS -->
+                <section id="tab-settings" class="tab-pane">
+                    <div class="section-layout">
+                        <!-- Profile/Settings form -->
+                        <div class="glass-card form-column">
+                            <h3>Global Settings</h3>
+                            <p class="section-desc">Manage system wide parameters and contact configurations.</p>
+                            <form id="settings-global-form" class="spacing-form">
+                                <div class="input-group">
+                                    <label for="global-support-url">Primary Admin Contact URL (displayed on login screen)</label>
+                                    <input type="url" id="global-support-url" required placeholder="https://t.me/ak_admin">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Settings</button>
+                            </form>
+                        </div>
+
+                        <!-- Change Password Card -->
+                        <div class="glass-card form-column">
+                            <h3>Update Password</h3>
+                            <p class="section-desc">Change the password of the active logged in session account.</p>
+                            <form id="change-password-form" class="spacing-form">
+                                <div class="input-group">
+                                    <label for="old-password">Old Password</label>
+                                    <input type="password" id="old-password" required placeholder="••••••••">
+                                </div>
+                                <div class="input-group">
+                                    <label for="new-password">New Password</label>
+                                    <input type="password" id="new-password" required placeholder="••••••••">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Update Password</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- NOTIFICATION POPUP -->
+    <div id="toast" class="toast">Successfully Saved!</div>
+
+    <!-- ACCOUNT DETAIL MODAL -->
+    <div id="account-detail-modal" class="modal-overlay" style="display:none;" onclick="if(event.target===this)closeAccountModal()">
+        <div class="modal-content glass-card" style="max-width:700px; max-height:80vh; overflow-y:auto; padding:24px;">
+            <div id="account-detail-content"></div>
+            <button class="btn btn-secondary" style="margin-top:16px;" onclick="closeAccountModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- JavaScript logic -->
+    <script src="app.js"></script>
+</body>
+</html>

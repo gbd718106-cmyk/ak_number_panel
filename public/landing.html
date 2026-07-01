@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AK NUMBER PANEL — Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .login-scene {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            background: radial-gradient(circle at 50% 30%, #1e1b4b 0%, #090a0f 70%);
+        }
+        .login-scene .logo-area { text-align: center; margin-bottom: 32px; }
+        .login-scene .logo-icon {
+            font-size: 56px; color: var(--primary); background: rgba(99,102,241,0.1);
+            height: 90px; width: 90px; border-radius: 50%; display: inline-flex;
+            justify-content: center; align-items: center;
+            box-shadow: 0 0 30px rgba(99,102,241,0.4); margin-bottom: 16px;
+        }
+        .login-scene h1 { font-size: 38px; font-weight: 800; letter-spacing: 1px; margin-bottom: 6px; }
+        .login-scene .subtitle { color: var(--text-muted); font-size: 15px; max-width: 450px; margin: 0 auto 8px; }
+        .login-box { width: 400px; max-width: 90%; }
+        .features-row { display: grid; grid-template-columns: repeat(3,1fr); gap:12px; max-width:700px; width:100%; margin: 0 auto 32px; }
+        .ft-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 16px 12px; text-align: center; }
+        .ft-card ion-icon { font-size: 24px; color: var(--primary); margin-bottom: 4px; }
+        .ft-card h4 { font-size: 12px; font-weight: 600; }
+        .ft-card p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+        .error-msg { color: var(--text-danger); font-size: 13px; text-align: center; margin-top: 10px; display: none; }
+        .bottom-links { margin-top: 24px; text-align: center; font-size: 13px; color: var(--text-muted); }
+        .bottom-links a { color: var(--primary); text-decoration: none; font-weight: 500; }
+        .bottom-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body class="dark-mode">
+<div class="login-scene">
+    <div class="logo-area">
+        <div class="logo-icon"><ion-icon name="keypad-outline"></ion-icon></div>
+        <h1>AK NUMBER PANEL</h1>
+        <p class="subtitle">Professional OTP verification platform. Log in to access services.</p>
+    </div>
+
+    <div class="features-row">
+        <div class="ft-card"><ion-icon name="phone-portrait-outline"></ion-icon><h4>Multiple Services</h4><p>WhatsApp, Telegram & more</p></div>
+        <div class="ft-card"><ion-icon name="globe-outline"></ion-icon><h4>Global Numbers</h4><p>70+ countries</p></div>
+        <div class="ft-card"><ion-icon name="flash-outline"></ion-icon><h4>Instant OTP</h4><p>Real-time delivery</p></div>
+    </div>
+
+    <div class="login-box glass-card" style="padding:28px;">
+        <form id="login-form">
+            <div class="input-group">
+                <label for="login-email">Email Address</label>
+                <input type="email" id="login-email" required placeholder="user@aknumber.com" autofocus>
+            </div>
+            <div class="input-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="btn-login">
+                <ion-icon name="log-in-outline"></ion-icon> Sign In
+            </button>
+            <p class="error-msg" id="login-error"></p>
+        </form>
+    </div>
+
+    <div class="bottom-links">
+        <p>Need access? <a id="admin-contact-link" href="#" target="_blank">Contact Admin</a></p>
+    </div>
+</div>
+
+<script src="landing.js"></script>
+</body>
+</html>
