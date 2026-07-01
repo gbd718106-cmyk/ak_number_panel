@@ -298,7 +298,7 @@ router.get('/services/live-from-provider/:providerId', authenticateToken, async 
             flag: g.flag,
             label: `${g.flag} ${g.name} ${idx + 1}`,
             traffic: r.traffic,
-            isEnabled: existing ? isNewRange : false,
+            isEnabled: existing ? isNewRange : true,
             isNew: existing ? isNewRange : true
           });
         });
@@ -306,7 +306,7 @@ router.get('/services/live-from-provider/:providerId', authenticateToken, async 
 
       return {
         platform: svc.sid,
-        isEnabled: existing ? existing.is_enabled : false,
+        isEnabled: existing ? existing.is_enabled : true,
         isNew: !existing,
         ranges: formattedRanges,
         rangeCount: formattedRanges.length

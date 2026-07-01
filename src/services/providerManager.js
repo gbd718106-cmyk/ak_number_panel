@@ -245,8 +245,8 @@ async function getLiveServices() {
           for (const svc of res.data.services) {
             const platformLower = svc.sid.toLowerCase();
 
-            // Global service disabled check OR not yet saved/approved
-            if (disabledServices.has(platformLower) || !savedServiceSet.has(platformLower)) continue;
+            // Global service disabled check
+            if (disabledServices.has(platformLower)) continue;
 
             // Service disabled for this provider check
             const disabledProvs = disabledProvMap.get(platformLower);
@@ -395,8 +395,12 @@ async function allocateNumber(providerCode, range, platform, botUserId, botId) {
         apiError = resData.message || 'API error';
       }
     } catch (err) {
-      console.error(`Account ${account.name} request failed:`, err.message);
-      apiError = err.message;
+      let errorMsg = err.message;
+      if (err.response && err.response.status === 400) {
+        errorMsg = err.response.data?.message || err.response.data?.error || 'এই লেন্সে নাম্বার স্টক শেষ';
+      }
+      console.error(`Account ${account.name} request failed:`, errorMsg);
+      apiError = errorMsg;
     }
   }
 

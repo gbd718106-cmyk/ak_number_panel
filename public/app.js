@@ -175,8 +175,9 @@ function switchTab(tabName) {
   if (tabName === 'users') loadUsers();
   if (tabName === 'providers') loadProviders();
   if (tabName === 'services') loadServicesProviderList();
-  if (tabName === 'broadcast') loadBroadcastBots();
-  if (tabName === 'settings') loadGlobalSettings();
+  if (tabName === 'broadcast') { loadBroadcastBots(); stopServiceAutoRefresh(); }
+  if (tabName === 'settings') { loadGlobalSettings(); stopServiceAutoRefresh(); }
+  if (tabName !== 'services') stopServiceAutoRefresh();
 }
 
 // ----------------------------------------------------
@@ -841,6 +842,9 @@ function closeAccountModal() {
 // ----------------------------------------------------
 let loadedServices = [];
 let selectedProviderId = null;
+let serviceAutoRefreshInterval = null;
+let manuallyDisabledRanges = new Set();
+let lastSavedState = null;
 
 async function loadServicesProviderList() {
   try {
@@ -858,24 +862,68 @@ async function loadProviderServices() {
   selectedProviderId = select.value;
   if (!selectedProviderId) {
     document.getElementById('svc-load-status').innerHTML = '<span style="color:var(--text-danger)">Please select a provider first.</span>';
+    stopServiceAutoRefresh();
     return;
   }
 
   document.getElementById('svc-load-status').innerHTML = '⏳ Loading services from API...';
   try {
     const data = await apiCall(`/api/services/live-from-provider/${selectedProviderId}`);
+    
+    if (loadedServices.length > 0) {
+      const existingMap = {};
+      loadedServices.forEach(s => { existingMap[s.platform.toLowerCase()] = s; });
+      
+      data.services.forEach(svc => {
+        const existing = existingMap[svc.platform.toLowerCase()];
+        if (existing) {
+          svc.isEnabled = existing.isEnabled;
+          const existingRangeMap = {};
+          existing.ranges.forEach(r => { existingRangeMap[r.range.toLowerCase()] = r; });
+          svc.ranges.forEach(r => {
+            const er = existingRangeMap[r.range.toLowerCase()];
+            if (er && !er.isEnabled && manuallyDisabledRanges.has(`${svc.platform}:${r.range}`.toLowerCase())) {
+              r.isEnabled = false;
+            }
+          });
+        }
+      });
+    }
+
     loadedServices = data.services;
+    lastSavedState = JSON.parse(JSON.stringify(loadedServices));
 
     if (loadedServices.length === 0) {
       document.getElementById('svc-load-status').innerHTML = '<span style="color:var(--text-warning)">No services found from this provider.</span>';
       document.getElementById('svc-toggle-list').innerHTML = '';
+      document.getElementById('svc-range-list').innerHTML = '<p class="section-desc text-center">No ranges to display.</p>';
       return;
     }
 
-    document.getElementById('svc-load-status').innerHTML = `<span style="color:var(--text-success)">✓ Loaded ${loadedServices.length} services from [${data.providerCode}]</span>`;
+    document.getElementById('svc-load-status').innerHTML = `<span style="color:var(--text-success)">✓ Loaded ${loadedServices.length} services from [${data.providerCode}] (auto-refresh every 12 min)</span>`;
     renderServiceToggles();
+    startServiceAutoRefresh();
   } catch (err) {
     document.getElementById('svc-load-status').innerHTML = `<span style="color:var(--text-danger)">Failed: ${err.message}</span>`;
+  }
+}
+
+function startServiceAutoRefresh() {
+  stopServiceAutoRefresh();
+  serviceAutoRefreshInterval = setInterval(() => {
+    if (currentTab === 'services' && selectedProviderId) {
+      const hasUnsavedChanges = JSON.stringify(loadedServices) !== JSON.stringify(lastSavedState);
+      if (!hasUnsavedChanges) {
+        loadProviderServices();
+      }
+    }
+  }, 12 * 60 * 1000);
+}
+
+function stopServiceAutoRefresh() {
+  if (serviceAutoRefreshInterval) {
+    clearInterval(serviceAutoRefreshInterval);
+    serviceAutoRefreshInterval = null;
   }
 }
 
@@ -919,6 +967,17 @@ async function saveServiceSelection() {
         disabled_ranges: disabledRanges
       });
     }
+    
+    manuallyDisabledRanges.clear();
+    loadedServices.forEach(svc => {
+      svc.ranges.forEach(r => {
+        if (!r.isEnabled) {
+          manuallyDisabledRanges.add(`${svc.platform}:${r.range}`.toLowerCase());
+        }
+      });
+    });
+    lastSavedState = JSON.parse(JSON.stringify(loadedServices));
+    
     showToast('Service & range selection saved!');
   } catch (err) {
     showToast(err.message || 'Save failed', 'red');

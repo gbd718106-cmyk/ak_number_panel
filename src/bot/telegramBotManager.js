@@ -306,7 +306,13 @@ function createBotInstance(botRecord) {
       ]) });
     } catch (err) {
       console.error(err);
-      try { await ctx.reply(`❌ Failed: ${err.message}`); } catch (e) {}
+      const errorMsg = err.message || 'Unknown error';
+      const friendlyMsg = errorMsg.toLowerCase().includes('stock')
+        ? `❌ স্টক শেষ — এই লেন্সে নাম্বার available নেই। অন্য লেন্স সিলেক্ট করুন।`
+        : errorMsg.includes('400') || errorMsg.includes('status code')
+          ? `❌ এই লেন্সে নাম্বার নেই (স্টক শেষ)। অন্য লেন্স বা রেঞ্জ ট্রাই করুন।`
+          : `❌ Failed: ${errorMsg}`;
+      try { await ctx.reply(friendlyMsg); } catch (e) {}
     }
   });
 
@@ -345,7 +351,13 @@ function createBotInstance(botRecord) {
       ]) });
     } catch (err) {
       console.error(err);
-      try { await ctx.reply(`❌ Failed: ${err.message}`); } catch (e) {}
+      const errorMsg = err.message || 'Unknown error';
+      const friendlyMsg = errorMsg.toLowerCase().includes('stock')
+        ? `❌ স্টক শেষ — এই লেন্সে নাম্বার available নেই। অন্য লেন্স সিলেক্ট করুন।`
+        : errorMsg.includes('400') || errorMsg.includes('status code')
+          ? `❌ এই লেন্সে নাম্বার নেই (স্টক শেষ)। অন্য লেন্স বা রেঞ্জ ট্রাই করুন।`
+          : `❌ Failed: ${errorMsg}`;
+      try { await ctx.reply(friendlyMsg); } catch (e) {}
     }
   }
 

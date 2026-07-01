@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const botManager = require('./bot/telegramBotManager');
 const providerManager = require('./services/providerManager');
+const serviceAutoSync = require('./services/serviceAutoSync');
 const otpPoller = require('./services/otpPoller');
 const adminRouter = require('./admin/server');
 const userPanelRouter = require('./admin/userPanel');
@@ -133,10 +134,13 @@ async function bootstrap() {
     // 2. Start API Health Latency Checks
     providerManager.startHealthChecks();
 
-    // 3. Start OTP Poller Loop
+    // 3. Start Service Auto-Sync (every 10 minutes)
+    serviceAutoSync.startAutoSync();
+
+    // 4. Start OTP Poller Loop
     otpPoller.startPolling();
 
-    // 4. Start Server Listening
+    // 5. Start Server Listening
     app.listen(PORT, () => {
       console.log(`🚀 AK NUMBER PANEL is running on port ${PORT}`);
       console.log(`🤖 Telegram Webhook path: /webhook/telegram/<token>`);
