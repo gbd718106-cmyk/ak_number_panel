@@ -854,3 +854,280 @@ input:checked + .switch-slider:before {
     flex-wrap: wrap;
     gap: 12px;
 }
+
+/* ===================================================== */
+/* MOBILE RESPONSIVE (max-width: 768px)                  */
+/* ===================================================== */
+@media (max-width: 768px) {
+
+    /* Body scroll */
+    body {
+        overflow: auto;
+        overflow-x: hidden;
+    }
+
+    /* --- ADMIN PANEL SIDEBAR --- */
+    .sidebar {
+        position: fixed;
+        left: -280px;
+        top: 0;
+        width: 260px;
+        height: 100vh;
+        z-index: 100;
+        transition: left 0.3s ease;
+    }
+    .sidebar.open {
+        left: 0;
+        box-shadow: 8px 0 30px rgba(0,0,0,0.6);
+    }
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 99;
+    }
+    .sidebar-overlay.show { display: block; }
+
+    /* Hamburger button */
+    .hamburger-btn {
+        display: flex !important;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--border-color);
+        color: var(--text-main);
+        font-size: 22px;
+        width: 40px; height: 40px;
+        border-radius: 8px;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+        margin-right: 12px;
+    }
+    .hamburger-btn:hover { background: rgba(255,255,255,0.1); }
+
+    /* Main content */
+    .main-content {
+        width: 100%;
+    }
+    .content-header {
+        padding: 16px 16px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .content-header h1 {
+        font-size: 18px;
+        flex: 1;
+        min-width: 0;
+    }
+    .scroll-area {
+        padding: 16px;
+    }
+
+    /* Metrics grid */
+    .metrics-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    .metric-card {
+        padding: 14px;
+        gap: 10px;
+    }
+    .metric-icon {
+        height: 40px; width: 40px;
+        font-size: 18px;
+    }
+    .metric-details h3 {
+        font-size: 18px;
+    }
+
+    /* Section layouts */
+    .section-layout {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    /* Forms */
+    .form-actions-row {
+        flex-wrap: wrap;
+    }
+    .form-actions-row .btn {
+        flex: 1;
+        min-width: 100px;
+    }
+
+    /* Tables */
+    .custom-table th,
+    .custom-table td {
+        padding: 10px 8px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    /* Sub tabs */
+    .tabs-sub-header {
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+    .tab-sub-btn {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
+    /* Cards grid */
+    .cards-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Accounts grid */
+    .accounts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Filter select */
+    .filter-select {
+        min-width: auto;
+        width: 100%;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+
+    /* Toast */
+    .toast {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        text-align: center;
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+        padding: 12px;
+    }
+    .modal-content {
+        max-width: 100% !important;
+        max-height: 90vh !important;
+    }
+
+    /* Login screen */
+    .login-card {
+        width: 100%;
+    }
+
+    /* --- USER PANEL --- */
+    .usr-sidebar {
+        position: fixed !important;
+        left: -260px !important;
+        top: 0 !important;
+        width: 250px !important;
+        height: 100vh !important;
+        z-index: 100 !important;
+        transition: left 0.3s ease !important;
+    }
+    .usr-sidebar.open {
+        left: 0 !important;
+        box-shadow: 8px 0 30px rgba(0,0,0,0.6) !important;
+    }
+
+    .usr-main {
+        width: 100% !important;
+    }
+    .usr-main-hd {
+        padding: 14px 16px !important;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .usr-main-hd h1 {
+        font-size: 18px !important;
+        flex: 1;
+        min-width: 0;
+    }
+    .usr-main-body {
+        padding: 14px 16px !important;
+    }
+
+    /* User layout */
+    .usr-layout {
+        overflow: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    /* Service cards */
+    #svc-grid {
+        grid-template-columns: 1fr 1fr !important;
+    }
+    .svc-card {
+        padding: 12px !important;
+    }
+    .svc-card h3 {
+        font-size: 13px !important;
+    }
+
+    /* Result cards */
+    .result-card {
+        padding: 14px !important;
+    }
+    .num-box {
+        font-size: 17px !important;
+        padding: 8px 12px !important;
+    }
+
+    /* Glass cards in user panel */
+    .user-tab-pane .glass-card {
+        padding: 16px !important;
+    }
+
+    /* --- LANDING PAGE --- */
+    .features-row {
+        grid-template-columns: 1fr 1fr 1fr !important;
+        gap: 8px !important;
+    }
+    .ft-card {
+        padding: 12px 8px !important;
+    }
+    .ft-card h4 {
+        font-size: 11px !important;
+    }
+    .login-scene h1 {
+        font-size: 28px !important;
+    }
+    .login-scene .logo-icon {
+        height: 70px !important;
+        width: 70px !important;
+        font-size: 40px !important;
+    }
+}
+
+/* Extra small phones */
+@media (max-width: 420px) {
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+    #svc-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .features-row {
+        grid-template-columns: 1fr !important;
+    }
+    .content-header h1,
+    .usr-main-hd h1 {
+        font-size: 16px !important;
+    }
+    .custom-table th,
+    .custom-table td {
+        padding: 8px 6px;
+        font-size: 11px;
+    }
+    .search-box {
+        flex-direction: column;
+    }
+    .search-box .btn {
+        width: 100%;
+    }
+}

@@ -288,5 +288,17 @@ document.querySelectorAll('.usr-nav-item').forEach(b => b.addEventListener('clic
 
 // INIT
 document.addEventListener('DOMContentLoaded', () => {
+  // Mobile hamburger
+  const hamburger = document.getElementById('usr-hamburger');
+  const sidebar = document.querySelector('.usr-sidebar');
+  const overlay = document.getElementById('usr-overlay');
+  if (hamburger && sidebar && overlay) {
+    hamburger.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('show'); });
+    overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('show'); });
+    document.querySelectorAll('.usr-nav-item').forEach(item => {
+      item.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('show'); });
+    });
+  }
+
   fetch('/api/user-panel/auth/me', { credentials: 'include' }).then(r => r.ok ? r.json() : Promise.reject()).then(() => { checkWebUser(); loadServices(); }).catch(() => window.location.href = '/landing');
 });

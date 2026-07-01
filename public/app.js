@@ -97,6 +97,28 @@ function showAppScreen() {
   document.getElementById('user-display-email').innerText = localStorage.getItem('ak_email') || 'Admin User';
   switchTab('dashboard');
   
+  // Mobile hamburger
+  const hamburger = document.getElementById('hamburger-btn');
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  if (hamburger && sidebar && overlay) {
+    hamburger.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('show');
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('show');
+    });
+    // Close sidebar on nav click (mobile)
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+      });
+    });
+  }
+  
   // Start periodic dashboard polling (every 8 seconds)
   setInterval(() => {
     if (currentTab === 'dashboard' && token) {
