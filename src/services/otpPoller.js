@@ -73,14 +73,21 @@ async function handleIncomingOTP(accountId, otpData) {
   const number = otpData.number;
   const cleanNumber = number.replace(/[^0-9]/g, '');
 
-  // Query matching active allocated numbers
+  // Query matching active allocated numbers with flexible phone number matching
+  // Handles format differences (country code vs trunk prefix, +/- symbols, spaces)
   const queryStr = `
     SELECT an.id, an.number, an.platform, bu.telegram_id, tb.token AS bot_token, tb.name AS bot_name
     FROM allocated_numbers an
     JOIN bot_users bu ON an.bot_user_id = bu.id
     JOIN telegram_bots tb ON an.bot_id = tb.id
     WHERE an.status = 'active' AND (
-      an.number = $1 OR an.number = $2 OR an.number = $3
+      an.number = $1
+      OR an.number = $2
+      OR an.number = $3
+      OR REGEXP_REPLACE(an.number, '[^0-9]', '') = $3
+      OR $3 LIKE '%' || REGEXP_REPLACE(an.number, '[^0-9]', '')
+      OR REGEXP_REPLACE(an.number, '[^0-9]', '') LIKE '%' || $3
+      OR RIGHT(REGEXP_REPLACE(an.number, '[^0-9]', ''), 9) = RIGHT($3, 9)
     )
     ORDER BY an.allocated_at DESC
   `;
@@ -89,6 +96,7 @@ async function handleIncomingOTP(accountId, otpData) {
   const allocated = allocRes.rows;
 
   if (allocated.length === 0) {
+    console.log(`⚠️ OTP UNMATCHED: number=${number} clean=${cleanNumber} — no active allocation found`);
     return;
   }
 
