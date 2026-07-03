@@ -103,19 +103,27 @@ async function handleIncomingOTP(accountId, otpData) {
   const alloc = allocated[0];
   console.log(`📨 OTP MATCHED: +${otpData.number} → Platform: ${alloc.platform} → User: ${alloc.telegram_id}`);
 
+  // Extract OTP code — prefer otp field, fall back to message parsing
+  let otpCode = otpData.otp || '';
+  const rawMessage = otpData.message || '';
+  if (!otpCode && rawMessage) {
+    otpCode = extractOtpFromMessage(rawMessage);
+    if (otpCode) {
+      console.log(`🔍 OTP extracted from message: "${rawMessage}" → "${otpCode}"`);
+    }
+  }
+
   // Prevent duplicate OTP processing
   const dupCheckRes = await db.query(
     'SELECT id FROM received_otps WHERE allocated_number_id = $1 AND otp_code = $2 AND raw_message = $3',
-    [alloc.id, otpData.otp, otpData.message]
+    [alloc.id, otpCode, rawMessage]
   );
   
   if (dupCheckRes.rows.length > 0) {
-    return; // Already logged
+    return;
   }
 
   // Insert OTP into database
-  const otpCode = otpData.otp || '';
-  const rawMessage = otpData.message || '';
   const id = db.generateUUID();
   await db.query(
     'INSERT INTO received_otps (id, allocated_number_id, otp_code, raw_message) VALUES ($1, $2, $3, $4)',
@@ -130,7 +138,6 @@ async function handleIncomingOTP(accountId, otpData) {
   if (bot && telegramId) {
     try {
       const cleanOtp = otpCode.replace(/[^0-9]/g, '');
-      const hasSymbols = otpCode && otpCode !== cleanOtp;
 
       let msg = `✨ <b>OTP Received!</b>\n\n`;
       msg += `📱 Number: <code>${alloc.number}</code>\n`;
@@ -140,7 +147,7 @@ async function handleIncomingOTP(accountId, otpData) {
       if (cleanOtp) {
         msg += `🔑 OTP Code:\n<code>${cleanOtp}</code>\n`;
         msg += `⬆️ Tap to copy`;
-        if (hasSymbols) {
+        if (otpCode !== cleanOtp) {
           msg += `\n\n📝 Raw: <code>${escapeHtml(otpCode)}</code>`;
         }
       } else {
@@ -152,6 +159,20 @@ async function handleIncomingOTP(accountId, otpData) {
       console.error(`Failed to dispatch message to user ${telegramId}:`, botErr.message);
     }
   }
+}
+
+function extractOtpFromMessage(rawMessage) {
+  if (!rawMessage) return '';
+  let cleaned = rawMessage.replace(/^<#>/, '').trim();
+  const spacedMatch = cleaned.match(/(\d{2,4})[\s-](\d{2,4})/);
+  if (spacedMatch) {
+    return spacedMatch[1] + spacedMatch[2];
+  }
+  const singleMatch = cleaned.match(/(?<!\d)\d{4,8}(?!\d)/);
+  if (singleMatch) return singleMatch[0];
+  const digitsMatch = cleaned.match(/\d{4,8}/);
+  if (digitsMatch) return digitsMatch[0];
+  return '';
 }
 
 function escapeMarkdown(text) {
