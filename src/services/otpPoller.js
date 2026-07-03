@@ -26,7 +26,7 @@ async function pollAccount(account) {
       const initRes = await axios.get(`${baseUrl}/api/live-console`, {
         headers: { 'X-API-Key': account.api_key },
         params: { limit: 1 },
-        timeout: 4000
+        timeout: 3000
       });
       if (initRes.data && initRes.data.data && initRes.data.data.otps && initRes.data.data.otps.length > 0) {
         accountMaxIds[account.id] = initRes.data.data.max_id || 0;
@@ -39,7 +39,7 @@ async function pollAccount(account) {
     const res = await axios.get(`${baseUrl}/api/live-console`, {
       headers: { 'X-API-Key': account.api_key },
       params: { since: since, limit: 100 },
-      timeout: 5000
+      timeout: 3000
     });
 
     if (res.data && res.data.meta && res.data.meta.code === 200 && res.data.data) {
@@ -134,10 +134,18 @@ async function handleIncomingOTP(accountId, otpData) {
 
       let msg = `✨ <b>OTP Received!</b>\n\n`;
       msg += `📱 Number: <code>${alloc.number}</code>\n`;
-      msg += `💬 Platform: ${alloc.platform}\n`;
+      msg += `💬 Platform: ${escapeHtml(alloc.platform)}\n`;
       msg += `✉️ Message: ${escapeHtml(rawMessage)}\n\n`;
-      if (otpCode) msg += `🔑 OTP Code: <code>${otpCode}</code>\n`;
-      if (hasSymbols) msg += `👉 Clean OTP: <code>${cleanOtp}</code>\n`;
+
+      if (cleanOtp) {
+        msg += `🔑 OTP Code:\n<code>${cleanOtp}</code>\n`;
+        msg += `⬆️ Tap to copy`;
+        if (hasSymbols) {
+          msg += `\n\n📝 Raw: <code>${escapeHtml(otpCode)}</code>`;
+        }
+      } else {
+        msg += `🔑 OTP Code: not found in message`;
+      }
 
       await bot.telegram.sendMessage(telegramId, msg, { parse_mode: 'HTML' });
     } catch (botErr) {
@@ -158,7 +166,11 @@ function escapeHtml(text) {
 /**
  * Polls all active provider accounts
  */
+let isPolling = false;
+
 async function pollAllAccounts() {
+  if (isPolling) return;
+  isPolling = true;
   try {
     const res = await db.query(`
       SELECT pa.id, pa.name, pa.api_key, p.base_url 
@@ -173,6 +185,8 @@ async function pollAllAccounts() {
     }
   } catch (err) {
     console.error('Error in poller account retrieval:', err.message);
+  } finally {
+    isPolling = false;
   }
 }
 
@@ -180,7 +194,7 @@ async function pollAllAccounts() {
  * Starts the polling loop
  */
 function startPolling() {
-  setInterval(pollAllAccounts, 3000); // Check every 3 seconds
+  setInterval(pollAllAccounts, 2000);
 }
 
 module.exports = {
